@@ -27,7 +27,7 @@ TEMPLATE_DEBUG = True
 ALLOWED_HOSTS = []
 
 MININET_AVAILABLE = True
-MININET_NEED_INIT = True
+MININET_NEED_INIT = False
 if MININET_AVAILABLE:
     from virtual_network import VirtualNetwork
     mini_network = VirtualNetwork()

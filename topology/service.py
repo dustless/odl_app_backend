@@ -219,7 +219,7 @@ def get_mininet_links():
 
 
 def get_mininet_topology():
-    if MININET_AVAILABLE and MININET_INIT:
+    if MININET_AVAILABLE and MININET_NEED_INIT:
         if not MiniNode.objects.all().exists():
             s1 = MiniNode.objects.create(node_name='s1', category='switch', loc='0 100')
             s2 = MiniNode.objects.create(node_name='s2', category='switch', loc='-20 60')
