@@ -44,12 +44,10 @@ def get_mini_network():
 
 def do_update_node(request, node):
     #category = request.REQUEST.get("category", None)
-    node_name = request.REQUEST.get("node_name", None)
+    #node_name = request.REQUEST.get("node_name", None)
     loc = request.REQUEST.get("loc", None)
     if loc:
         node.loc = loc
-    if node_name and not isinstance(node, MiniNode):
-        node.node_name = node_name
     node.save()
 
 
@@ -215,3 +213,13 @@ def get_mininet_links():
         dic = link.get_dict()
         links.append(dic)
     return links
+
+
+def get_mininet_topology():
+    nodes = get_mininet_nodes()
+    links = get_mininet_links()
+    dic = {
+        "nodeDataArray": nodes,
+        "linkDataArray": links
+    }
+    return dic

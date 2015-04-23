@@ -8,8 +8,7 @@
 	Params			
 	{
 	    "category":
-	    "node_id": for Mininet
-	    "node_name": for show
+	    "node_name": 
 	    "loc":
 	}
 	Result
@@ -31,9 +30,8 @@
 	Method	POST/GET
 	Params			
 	{
-	    "node_id":
+	    "id":
 	    
-	    "node_name":
 	    "loc":
 	}
 	Result
@@ -55,7 +53,7 @@
 	Method	POST/GET
 	Params			
 	{
-	    "node_id":
+	    "id":
 	}
 	Result
 	{
@@ -92,7 +90,30 @@
 		]
 	}
 
-### 1.5 delete link
+### 1.5 update link
+**Description**:
+
+    URL		mininet/update/link/
+	Method	POST/GET
+	Params			
+	{
+	    "id":
+	    
+	    "curve":
+	}
+	Result
+	{
+        "code":200
+        "msg":"success"
+        "nodeDataArray": [
+            {"id": 1, "category":"server", "loc":"143 -130", "node_id":"server1", "node_name":"xxx"}
+        ],
+		"linkDataArray": [
+			{"link_id":"link", "source_node_id":1, "source_node_name":"xxx", "dest_node_id":2, "dest_node_name":"xxx", "curve":0}
+		]
+	}
+
+### 1.6 delete link
 **Description**: 
 
 	URL		mininet/delete/link/

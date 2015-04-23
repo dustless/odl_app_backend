@@ -19,19 +19,19 @@ def mininet_add_node(request):
         mini_network = get_mini_network()
         if isinstance(mini_network, HttpResponse):
             return mini_network
-        node, created = MiniNode.objects.get_or_create(node_id=request.REQUEST['node_id'], node_name=request.REQUEST['node_id'])
+        node, created = MiniNode.objects.get_or_create(node_name=request.REQUEST['node_name'])
         if not created:
-            return wrap_error_response(400, "Node id already exists.")
+            return wrap_error_response(400, "Node name already exists.")
         do_update_node(request, node)
         try:
             if node.category == 'switch':
-                mini_network.add_switch(node.node_id)
+                mini_network.add_switch(node.node_name)
             else:
-                mini_network.add_host(node.node_id)
+                mini_network.add_host(node.node_name)
         except:
             node.delete()
             return wrap_error_response(500, "Add node failed.Try again.")
-        return wrap_success_response()
+        return wrap_success_response(get_mininet_topology())
     except Exception as e:
         print traceback.print_exc()
         return wrap_error_response(500, str(e))
@@ -41,11 +41,11 @@ def mininet_add_node(request):
 def mininet_update_node(request):
     try:
         try:
-            node = MiniNode.objects.get(node_id=request.REQUEST['node_id'])
+            node = MiniNode.objects.get(id=request.REQUEST['id'])
         except:
             return wrap_error_response(400, "Node does not exist.")
         do_update_node(request, node)
-        return wrap_success_response()
+        return wrap_success_response(get_mininet_topology())
     except Exception as e:
         print traceback.print_exc()
         return wrap_error_response(500, str(e))
@@ -58,9 +58,9 @@ def mininet_delete_node(request):
         if isinstance(mini_network, HttpResponse):
             return mini_network
         try:
-            node = MiniNode.objects.get(node_id=request.REQUEST['node_id'])
+            node = MiniNode.objects.get(id=request.REQUEST['id'])
             mini_network
-            return wrap_success_response()
+            return wrap_error_response(500, 'Not available now.')
         except:
             return wrap_error_response(400, "Update failed.Maybe node does not exists")
     except Exception as e:
@@ -85,7 +85,23 @@ def mininet_add_link(request):
         except:
             link_id = str(source_node.id) + ':' + str(dest_node.id)
             MiniLink.objects.create(link_id, source_node=source_node, dest_node=dest_node, curve=curve)
-            return wrap_success_response()
+            return wrap_success_response(get_mininet_topology())
+    except Exception as e:
+        print traceback.print_exc()
+        return wrap_error_response(500, str(e))
+
+
+@csrf_exempt
+def mininet_update_link(request):
+    try:
+        try:
+            link = MiniLink.objects.get(id=request.REQUEST['id'])
+        except:
+            return wrap_error_response(400, "Node does not exist.")
+        if "curve" in request.REQUEST and request.REQUEST["curve"]:
+            link.curve = float(request.REQUEST["curve"])
+        link.save()
+        return wrap_success_response(get_mininet_topology())
     except Exception as e:
         print traceback.print_exc()
         return wrap_error_response(500, str(e))
@@ -94,7 +110,7 @@ def mininet_add_link(request):
 @csrf_exempt
 def mininet_delete_link(request):
     try:
-        pass
+        return wrap_error_response(500, 'Not available now.')
     except Exception as e:
         print traceback.print_exc()
         return wrap_error_response(500, str(e))
@@ -103,13 +119,7 @@ def mininet_delete_link(request):
 @csrf_exempt
 def get_mininet_topology_data(request):
     try:
-        nodes = get_mininet_nodes()
-        links = get_mininet_links()
-        dic = {
-            "nodeDataArray": nodes,
-            "linkDataArray": links
-        }
-        return wrap_success_response(dic)
+        return wrap_success_response(get_mininet_topology())
     except Exception as e:
         print traceback.print_exc()
         return wrap_error_response(500, str(e))

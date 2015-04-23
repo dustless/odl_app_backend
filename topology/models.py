@@ -8,7 +8,7 @@ import time
 
 # Create your models here.
 class Node(models.Model):
-    node_id = models.CharField(max_length=30, unique=True, db_index=True)
+    #node_id = models.CharField(max_length=30, unique=True, db_index=True)
     node_name = models.CharField(max_length=30, unique=True)
     category = models.CharField(max_length=20, default='switch')
     loc = models.CharField(max_length=20, default="0 0")
