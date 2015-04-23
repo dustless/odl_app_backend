@@ -22,6 +22,7 @@ def mininet_add_node(request):
         node, created = MiniNode.objects.get_or_create(node_name=request.REQUEST['node_name'])
         if not created:
             return wrap_error_response(400, "Node name already exists.")
+        node.category = request.REQUEST['category']
         do_update_node(request, node)
         try:
             if node.category == 'switch':
