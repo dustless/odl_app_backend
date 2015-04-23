@@ -207,6 +207,8 @@ def get_optimal_path(request):
         load_weight = request.REQUEST.get("loadWeight", 0)
         if load_weight == '':
             load_weight = 0
+        else:
+            load_weight = float(load_weight)
         source_node_id = int(request.REQUEST.get("source_node_id", 0))
         dest_node_id = int(request.REQUEST.get("dest_node_id", 0))
         if not source_node_id or not dest_node_id:
