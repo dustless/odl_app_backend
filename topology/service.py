@@ -83,10 +83,10 @@ def get_and_update_nodes(topology):
                     node = Node.objects.get(node_id=node_dic['node-id'])
                 except:
                     if 'host' in node_dic['node-id']:
-                        name = 'h_' + str(Node.objects.all().order_by('-id')[0].id + 1)
+                        name = 'h_' + str(Node.objects.all().count() + 1)
                         category = 'server'
                     else:
-                        name = 's_' + str(Node.objects.all().order_by('-id')[0].id + 1)
+                        name = 's_' + str(Node.objects.all().count() + 1)
                         category = 'switch'
                     if node_dic['node-id'] == 'openflow:1':
                         loc = '35 -250'
