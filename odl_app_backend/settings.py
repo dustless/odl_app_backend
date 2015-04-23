@@ -27,12 +27,13 @@ TEMPLATE_DEBUG = True
 ALLOWED_HOSTS = []
 
 MININET_AVAILABLE = True
-
-if MININET_AVAILABLE:
-    from virtual_network import VirtualNetwork
-    mini_network = VirtualNetwork()
-else:
-    mini_network = None
+MININET_INIT = True
+mini_network = None
+# if MININET_AVAILABLE:
+#     from virtual_network import VirtualNetwork
+#     mini_network = VirtualNetwork()
+# else:
+#     mini_network = None
 
 
 # Application definition

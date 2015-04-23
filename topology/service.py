@@ -7,7 +7,9 @@ import time
 import traceback
 import string, random
 
-from odl_app_backend.settings import mini_network
+from odl_app_backend.virtual_network import VirtualNetwork
+from odl_app_backend.settings import MININET_AVAILABLE, MININET_INIT, mini_network
+mini_network = None
 
 _url_topology = '{config}/network-topology:network-topology/'
 _url_inventory_nodes = '{config}/opendaylight-inventory:nodes'
@@ -36,8 +38,28 @@ def make_random_digits(length=9):
 
 
 def get_mini_network():
-    if mini_network:
-        return mini_network
+    if MININET_AVAILABLE:
+        if mini_network:
+            return mini_network
+        else:
+            mini_network = VirtualNetwork()
+            if MININET_INIT:
+                mini_network.init_topo()
+                s1 = MiniNode.objects.create(node_name='s1', category='switch', loc='0 100')
+                s2 = MiniNode.objects.create(node_name='s2', category='switch', loc='-20 60')
+                s3 = MiniNode.objects.create(node_name='s3', category='switch', loc='20 60')
+                h1 = MiniNode.objects.create(node_name='h1', category='host', loc='-50 20')
+                h2 = MiniNode.objects.create(node_name='h2', category='host', loc='-25 20')
+                h3 = MiniNode.objects.create(node_name='h3', category='host', loc='25 20')
+                h4 = MiniNode.objects.create(node_name='h4', category='host', loc='50 20')
+                MiniLink.objects.create(link_id='1:2', source_node=s1, dest_node=s2)
+                MiniLink.objects.create(link_id='1:3', source_node=s1, dest_node=s3)
+                MiniLink.objects.create(link_id='2:4', source_node=s2, dest_node=h1)
+                MiniLink.objects.create(link_id='2:5', source_node=s2, dest_node=h2)
+                MiniLink.objects.create(link_id='3:6', source_node=s3, dest_node=h3)
+                MiniLink.objects.create(link_id='3:7', source_node=s3, dest_node=h4)
+
+            return mini_network
     else:
         return wrap_error_response(500, "Mininet is not available.")
 
