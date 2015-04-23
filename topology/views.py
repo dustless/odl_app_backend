@@ -127,7 +127,15 @@ def mininet_delete_link(request):
         except:
             return wrap_error_response(400, "Link does not exist.")
         try:
-            pass
+            node1 = link.source_node.node_name
+            node2 = link.dest_node.node_name
+            for link in mini_network.net.links:
+                if (node1 in link.intf1.name and node2 in link.intf2.name)\
+                    or (node2 in link.intf1.name and node1 in link.intf2.name):
+                    node1, port1 = link.intf1.name.split('-')
+                    node2, port2 = link.intf2.name.split('-')
+                    mini_network.remove_link(node1, node2, port1, port2)
+                    break
         except Exception as e:
             return wrap_error_response(500, "Delete link error."+str(e))
         link.delete()
@@ -197,7 +205,7 @@ def get_optimal_path(request):
 
 
 ### mininet
-def ping_all(request):
+def mininet_ping_all(request):
     try:
         mini_network = get_mini_network()
         if isinstance(mini_network, HttpResponse):
@@ -210,7 +218,7 @@ def ping_all(request):
 
 
 @csrf_exempt
-def ping_between_hosts(request):
+def mininet_ping_between_hosts(request):
     try:
         mini_network = get_mini_network()
         if isinstance(mini_network, HttpResponse):
