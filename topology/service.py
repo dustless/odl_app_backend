@@ -192,29 +192,23 @@ def update_links_load(topology):
             for node_connector in node_dic['node-connector']:
                 if 'LOCAL' not in node_connector['id']:
                     try:
-                        #print node_connector['id']
                         link = Link.objects.filter(link_id__icontains=node_connector['id'])
                         if link:
                             link = link[0]
                         else:
                             continue
-                        #print link.id
                         link_load, created = LinkLoad.objects.get_or_create(link=link)
-                        #print node_connector['opendaylight-port-statistics:flow-capable-node-connector-statistics']['bytes']
 
                         cur_s2d_bytes = node_connector['opendaylight-port-statistics:flow-capable-node-connector-statistics']['bytes']['transmitted']
                         cur_d2s_bytes = node_connector['opendaylight-port-statistics:flow-capable-node-connector-statistics']['bytes']['received']
-                        print cur_s2d_bytes, cur_d2s_bytes
-                        print created
+
                         if not created:
-                            link.load_s2d = (cur_s2d_bytes - link_load.bytes_s2d)*8.0/(get_cur_utc_timestamp()-link_load.update_time)/1000.0
-                            link.load_d2s = (cur_d2s_bytes - link_load.bytes_d2s)*8.0/(get_cur_utc_timestamp()-link_load.update_time)/1000.0
+                            link.load_s2d = (cur_s2d_bytes - link_load.bytes_s2d)*8.0/(time.time()-link_load.update_time)/1000.0
+                            link.load_d2s = (cur_d2s_bytes - link_load.bytes_d2s)*8.0/(time.time()-link_load.update_time)/1000.0
                             link.save()
-                        #print "link:%d\ns2d:pre_bytes:%d, cur_bytes:%d\nd2s:pre_bytes:%d, cur_bytes:%d\n" % \
-                        #      (link.id, link_load.bytes_s2d, cur_s2d_bytes, link_load.bytes_d2s, cur_d2s_bytes)
                         link_load.bytes_s2d = cur_s2d_bytes
                         link_load.bytes_d2s = cur_d2s_bytes
-                        link_load.update_time = get_cur_utc_timestamp()
+                        link_load.update_time = time.time()
                         link_load.save()
                     except:
                         #print traceback.print_exc()

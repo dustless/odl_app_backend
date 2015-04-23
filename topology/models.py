@@ -47,15 +47,15 @@ class Link(models.Model):
         return dic
 
 
-def default_current_unix_time():
-    return long(time.mktime(datetime.utcnow().timetuple()))
+def default_current_time():
+    return time.time()
 
 
 class LinkLoad(models.Model):
     link = models.ForeignKey(Link, related_name='link_load')
     bytes_s2d = models.IntegerField(default=0)
     bytes_d2s = models.IntegerField(default=0)
-    update_time = models.BigIntegerField(default=default_current_unix_time)
+    update_time = models.FloatField(default=default_current_time)
 
 
 class MiniNode(models.Model):
