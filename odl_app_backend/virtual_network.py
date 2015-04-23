@@ -24,12 +24,6 @@ class VirtualNetwork(object):
     def get_net(self):
         return self.net
 
-    @staticmethod
-    def get_instance():
-        if VirtualNetwork.instance == None:
-            VirtualNetwork.instance = VirtualNetwork()
-        return VirtualNetwork.instance
-
     def init_topo(self):
         if self.initialized:
             return
