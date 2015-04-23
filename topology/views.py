@@ -204,7 +204,20 @@ def get_controller_topology_data(request):
 @csrf_exempt
 def get_optimal_path(request):
     try:
-        pass
+        load_weight = request.REQUEST.get("loadWeight", 0)
+        source_node_id = int(request.REQUEST.get("source_node_id", None))
+        dest_node_id = int(request.REQUEST.get("dest_node_id", None))
+        if not source_node_id or not dest_node_id:
+            return wrap_error_response(400, 'source_node_id and dest_node_id is needed.')
+        try:
+            source_node = Node.objects.get(id=source_node_id)
+            dest_node = Node.objects.get(id=dest_node_id)
+        except:
+            return wrap_error_response(400, 'source node or dest node is not found.')
+
+        topology = get_controller_topology()
+        topology = add_optimal_path(topology, load_weight, source_node_id, dest_node_id)
+        return wrap_success_response(topology)
     except Exception as e:
         print traceback.print_exc()
         return wrap_error_response(500, str(e))

@@ -92,7 +92,16 @@ def get_and_update_nodes(topology):
                         while Node.objects.filter(node_name=name).exists():
                             name = 's_' + make_random_digits(4)
                         category = 'switch'
+                    if node_dic['node-id'] == 'openflow:1':
+                        loc = '35 -250'
+                    elif node_dic['node-id'] == 'openflow:2':
+                        loc = '-81 -120'
+                    elif node_dic['node-id'] == 'openflow:3':
+                        loc = '152 -120'
+                    else:
+                        loc = str(random.randint(-200, 100)) + ' ' + str(random.randint(-50, 20))
                     node = Node.objects.create(node_id=node_dic['node-id'], node_name=name, category=category)
+
                 dic = node.get_dict()
                 nodes.append(dic)
             except:
@@ -229,8 +238,8 @@ def get_mininet_topology():
             s2 = MiniNode.objects.create(node_name='s2', category='switch', loc='-81 -120')
             s3 = MiniNode.objects.create(node_name='s3', category='switch', loc='152 -120')
             h1 = MiniNode.objects.create(node_name='h1', category='host', loc='-167 -10')
-            h2 = MiniNode.objects.create(node_name='h2', category='host', loc='-20 -10')
-            h3 = MiniNode.objects.create(node_name='h3', category='host', loc='-110 -10')
+            h2 = MiniNode.objects.create(node_name='h2', category='host', loc='-110 -10')
+            h3 = MiniNode.objects.create(node_name='h3', category='host', loc='75 -10')
             h4 = MiniNode.objects.create(node_name='h4', category='host', loc='260 -10')
             MiniLink.objects.create(link_id='1:2', source_node=s1, dest_node=s2)
             MiniLink.objects.create(link_id='1:3', source_node=s1, dest_node=s3)
@@ -260,6 +269,17 @@ def get_controller_topology():
 ### path calculate
 ### use bellman-ford
 
+def make_graph(topology, load_weight):
+    graph = {}
+    for node_dic in topology['nodeDataArray']:
+        graph[node_dic['id']] = {}
+    for link_dic in topology['linkDataArray']:
+        if link_dic['source_node_id'] in graph:
+            cost = link_dic['cost']*(1 - load_weight) + \
+                   max(float(link_dic['load_s2d'].split(' ')[0]), float(link_dic['load_d2s'].split(' ')[0]))/100.0*load_weight
+            graph[link_dic['source_node_id']][link_dic['dest_node_id']] = cost
+    return graph
+
 
 def relax(node, neighbour, graph, d, p):
     if d[neighbour] > d[node] + graph[node][neighbour]:
@@ -286,32 +306,19 @@ def bellman_ford(graph, source):
 
     return dist, pre
 
+def add_optimal_path(topology, load_weight, source, dest):
+    graph = make_graph(topology, load_weight)
+    dist, pre = bellman_ford(graph, source)
+    path = []
+    while dest != source:
+        path.append((dest, pre[dest]))
+        dest = pre[dest]
+    for link_dic in topology['linkDataArray']:
+        if (link_dic['source_node_id'], link_dic['dest_node_id']) in path or\
+                (link_dic['dest_node_id'], link_dic['source_node_id']) in path:
+            link_dic['category'] = 'bestPath'
+    return topology
 
-def test():
-    graph = {
-        'a': {'b': -1, 'c':  4},
-        'b': {'c':  3, 'd':  2, 'e':  2},
-        'c': {},
-        'd': {'b':  1, 'c':  5},
-        'e': {'d': -3}
-        }
 
-    d, p = bellman_ford(graph, 'a')
-
-    assert d == {
-        'a':  0,
-        'b': -1,
-        'c':  2,
-        'd': -2,
-        'e':  1
-        }
-
-    assert p == {
-        'a': None,
-        'b': 'a',
-        'c': 'b',
-        'd': 'e',
-        'e': 'b'
-        }
-
-if __name__ == '__main__': test()
+if __name__ == '__main__':
+    pass
