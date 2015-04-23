@@ -7,7 +7,7 @@ import time
 import traceback
 import string, random
 
-from odl_app_backend.virtual_network import VirtualNetwork
+#from odl_app_backend.virtual_network import VirtualNetwork
 from odl_app_backend.settings import MININET_AVAILABLE, MININET_NEED_INIT, mini_network
 
 _url_topology = '{config}/network-topology:network-topology/'
@@ -274,10 +274,12 @@ def make_graph(topology, load_weight):
     for node_dic in topology['nodeDataArray']:
         graph[node_dic['id']] = {}
     for link_dic in topology['linkDataArray']:
-        if link_dic['source_node_id'] in graph:
-            cost = link_dic['cost']*(1 - load_weight) + \
-                   max(float(link_dic['load_s2d'].split(' ')[0]), float(link_dic['load_d2s'].split(' ')[0]))/100.0*load_weight
-            graph[link_dic['source_node_id']][link_dic['dest_node_id']] = cost
+        if link_dic['source_node_id'] in graph and link_dic['dest_node_id'] in graph:
+            graph[link_dic['source_node_id']][link_dic['dest_node_id']] = \
+                link_dic['cost']*(1 - load_weight) + float(link_dic['load_s2d'].split(' ')[0])/100.0*load_weight
+            graph[link_dic['dest_node_id']][link_dic['source_node_id']] = \
+                link_dic['cost']*(1 - load_weight) + float(link_dic['load_d2s'].split(' ')[0])/100.0*load_weight
+
     return graph
 
 
@@ -306,6 +308,7 @@ def bellman_ford(graph, source):
 
     return dist, pre
 
+
 def add_optimal_path(topology, load_weight, source, dest):
     graph = make_graph(topology, load_weight)
     dist, pre = bellman_ford(graph, source)
@@ -321,4 +324,5 @@ def add_optimal_path(topology, load_weight, source, dest):
 
 
 if __name__ == '__main__':
-    pass
+    topology = get_controller_topology()
+    add_optimal_path(topology, 0, 4, 7)
