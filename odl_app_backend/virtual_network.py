@@ -17,6 +17,7 @@ class VirtualNetwork(object):
         s1 = self.net.addSwitch('s1')
         s2 = self.net.addSwitch('s2')
         s3 = self.net.addSwitch('s3')
+        self.switch = s2
 
         print "*** Creating hosts"
         hosts1 = [self.net.addHost('h%d' % n) for n in 1, 2]
@@ -44,15 +45,84 @@ class VirtualNetwork(object):
         print "*** Add switch"
         s = self.net.addSwitch(name)
         s.start([self.controller])
+        #self.start_net()
         return s
+
+    def remove_switch(self, name):
+        print "*** Remove switch"
+        print self.net.switches
+        to_be_removed = []
+        for index in range(len(self.net.links)):
+            linkinfo = self.net.links[index].intf1.name.split('-')
+            linkinfo.extend(self.net.links[index].intf2.name.split('-'))
+            print "%s, %s, %s" % (self.net.links[index].intf1.name, self.net.links[index].intf2.name, linkinfo)
+            if name in linkinfo:
+                self.net.links[index].stop()
+                to_be_removed.append(self.net.links[index])
+
+        print "to_be_removed %s" % to_be_removed
+        for index in range(len(to_be_removed)):
+            print "index is %s, %s" % (index, to_be_removed[index])
+            self.net.links.remove(to_be_removed[index])
+
+        for index in range(len(self.net.switches)):
+            if self.net.switches[index].name == name:
+                self.net.switches[index].stop()
+        self.net.switches = filter(lambda x:x.name != name, self.net.switches)
+        print self.net.switches
 
     def add_host(self, name):
         print "*** Add host"
-        return self.net.addHost(name)
+        host = self.net.addHost(name)
+        #self.start_net()
+        return host
+
+    def remove_host(self, name):
+        print "*** Remove host"
+        print self.net.hosts
+        to_be_removed = []
+        for index in range(len(self.net.links)):
+            linkinfo = self.net.links[index].intf1.name.split('-')
+            linkinfo.extend(self.net.links[index].intf2.name.split('-'))
+            print "%s, %s, %s" % (self.net.links[index].intf1.name, self.net.links[index].intf2.name, linkinfo)
+            if name in linkinfo:
+                print "remove link %s" % self.net.links[index]
+                self.net.links[index].stop()
+                to_be_removed.append(self.net.links[index])
+        print "to_be_removed %s" % to_be_removed
+        for index in range(len(to_be_removed)):
+            print "index is %s, %s" % (index, to_be_removed[index])
+            self.net.links.remove(to_be_removed[index])
+
+        for index in range(len(self.net.hosts)):
+            if self.net.hosts[index].name == name:
+                print "remove host: %s" % self.net.hosts[index].name
+                self.net.hosts[index].stop()
+        print self.net.hosts
+        self.net.hosts = filter(lambda x:x.name != name, self.net.hosts)
+        print self.net.hosts
 
     def add_link(self, node1, node2):
         print "*** Add link"
         self.net.addLink(node1, node2)
+        #self.start_net()
+
+    def remove_link(self, node1, node2, port1, port2):
+        print "*** Remove link"
+        name = "%s-%s<->%s-%s" % (node1, port1, node2, port2)
+        to_be_removed = []
+        for index in range(len(self.net.links)):
+            link_name = "%s<->%s" % (self.net.links[index].intf1.name, self.net.links[index].intf2.name)
+            reverse_link_name = "%s<->%s" % (self.net.links[index].intf2.name, self.net.links[index].intf1.name)
+            if name == link_name or name == reverse_link_name:
+                self.net.links[index].stop()
+                to_be_removed.append(self.net.links[index])
+                break
+
+        print "to_be_removed %s" % to_be_removed
+        for index in range(len(to_be_removed)):
+            print "index is %s, %s" % (index, to_be_removed[index])
+            self.net.links.remove(to_be_removed[index])
 
     def ping_all(self):
         self.net.pingAll()
@@ -60,31 +130,8 @@ class VirtualNetwork(object):
     def ping_between_hosts(self, node1, node2):
         hosts = [node1, node2]
         self.net.ping(hosts)
-    
+
     def start_net(self):
         self.net.build()
         self.net.start()
-
-if __name__ == '__main__':
-    setLogLevel( 'info' )  # for CLI output
-    topology = VirtualNetwork()
-    topology.init_topo()
-    s4 = topology.add_switch('s4')
-    h5 = topology.add_host('h5')
-    h6 = topology.add_host('h6')
-    topology.add_link(s4, topology.switch)
-    topology.add_link(s4, h5)
-    topology.add_link(s4, h6)
-    print topology.switch
-    topology.start_net()
-    
-    s5 = topology.add_switch('s5')
-    topology.add_link(s5, topology.get_net().get('s3'))
-    h7 = topology.add_host('h7')
-    h8 = topology.add_host('h8')
-    topology.add_link(s5, h7)
-    topology.add_link(s5, h8)
-    topology.start_net()
-    topology.ping_all()
-    topology.ping_between_hosts(h5, h6)
 

@@ -16,14 +16,14 @@
         "code":200
         "msg":"success"
         "nodeDataArray": [
-            {"id": 1, "category":"server", "loc":"143 -130", "node_id":"server1", "node_name":"xxx"}
+            {"id": 1, "category":"server", "loc":"143 -130", "node_name":"xxx"}
         ],
 		"linkDataArray": [
 			{"link_id":"link", "source_node_id":1, "source_node_name":"xxx", "dest_node_id":2, "dest_node_name":"xxx", "curve":0}
 		]
 	}
 
-### 1.2 modify node name
+### 1.2 modify node
 **Description**: 
 
 	URL		mininet/update/node/
@@ -39,7 +39,7 @@
         "code":200
         "msg":"success"
         "nodeDataArray": [
-            {"id": 1, "category":"server", "loc":"143 -130", "node_id":"server1", "node_name":"xxx"}
+            {"id": 1, "category":"server", "loc":"143 -130", "node_name":"xxx"}
         ],
 		"linkDataArray": [
 			{"link_id":"link", "source_node_id":1, "source_node_name":"xxx", "dest_node_id":2, "dest_node_name":"xxx", "curve":0}
@@ -60,7 +60,7 @@
         "code":200
         "msg":"success"
         "nodeDataArray": [
-            {"id": 1, "category":"server", "loc":"143 -130", "node_id":"server1", "node_name":"xxx"}
+            {"id": 1, "category":"server", "loc":"143 -130", "node_name":"xxx"}
         ],
 		"linkDataArray": [
 			{"link_id":"link", "source_node_id":1, "source_node_name":"xxx", "dest_node_id":2, "dest_node_name":"xxx", "curve":0}
@@ -83,7 +83,7 @@
         "code":200
         "msg":"success"
         "nodeDataArray": [
-            {"id": 1, "category":"server", "loc":"143 -130", "node_id":"server1", "node_name":"xxx"}
+            {"id": 1, "category":"server", "loc":"143 -130", "node_name":"xxx"}
         ],
 		"linkDataArray": [
 			{"link_id":"link", "source_node_id":1, "source_node_name":"xxx", "dest_node_id":2, "dest_node_name":"xxx", "curve":0}
@@ -106,7 +106,7 @@
         "code":200
         "msg":"success"
         "nodeDataArray": [
-            {"id": 1, "category":"server", "loc":"143 -130", "node_id":"server1", "node_name":"xxx"}
+            {"id": 1, "category":"server", "loc":"143 -130", "node_name":"xxx"}
         ],
 		"linkDataArray": [
 			{"link_id":"link", "source_node_id":1, "source_node_name":"xxx", "dest_node_id":2, "dest_node_name":"xxx", "curve":0}
@@ -127,6 +127,32 @@
         "code":200
         "msg":"success"
         "nodeDataArray": [
+            {"id": 1, "category":"server", "loc":"143 -130", "node_name":"xxx"}
+        ],
+		"linkDataArray": [
+			{"link_id":"link", "source_node_id":1, "source_node_name":"xxx", "dest_node_id":2, "dest_node_name":"xxx", "curve":0}
+		]
+	}
+
+## 2 modify topology for ODL view
+
+### 2.1 modify node node_name or loc
+**Description**: 
+
+	URL		opendaylight/update/node/
+	Method	POST/GET
+	Params			
+	{
+	    "id":
+	    
+	    "node_name":
+	    "loc":
+	}
+	Result
+	{
+        "code":200
+        "msg":"success"
+        "nodeDataArray": [
             {"id": 1, "category":"server", "loc":"143 -130", "node_id":"server1", "node_name":"xxx"}
         ],
 		"linkDataArray": [
@@ -134,7 +160,32 @@
 		]
 	}
 
-## 2 get topology from controller
+### 2.2 modify link curve or cost
+**Description**: 
+
+	URL		opendaylight/update/link/
+	Method	POST/GET
+	Params			
+	{
+	    "id":
+	    
+	    "curve":
+	    "cost":
+	}
+	Result
+	{
+        "code":200
+        "msg":"success"
+        "nodeDataArray": [
+            {"id": 1, "category":"server", "loc":"143 -130", "node_id":"server1", "node_name":"xxx"}
+        ],
+		"linkDataArray": [
+			{"link_id":"link", "cost": 1.0, "source_node_id":1, "source_node_name":"xxx", "dest_node_id":2, "dest_node_name":"xxx", "curve":0}
+		]
+	}
+
+
+## 3 get topology from controller
 **Description**: 
 
 	URL		opendaylight/get/topology/
@@ -147,16 +198,36 @@
         "code":200
         "msg":"success"
         "nodeDataArray": [
-            {"id": 1, "category":"server", "loc":"143 -130", "node_id":"server1", "node_name":"xxx"}
+            {
+                "id": 1,
+                "category":"switch",
+                "loc":"143 -130",
+                "node_id":"openflow:1",
+                "node_name":"s_1"
+            },
+            ...
         ],
 		"linkDataArray": [
-			{"link_id":"link", "source_node_id":1, "source_node_name":"xxx", "dest_node_id":2, "dest_node_name":"xxx", "load_s2d":"10Mbps", "load_d2s":"1Mbps", "color":"#01DF01", "curve":0}
+			{
+			    "id":
+			    "link_id":"link",
+			    "cost": 1.0,
+			    "source_node_id":1,
+			    "source_node_name":"xxx",
+			    "dest_node_id":2,
+			    "dest_node_name":"xxx",
+			    "load_s2d":"10Mbps",
+			    "load_d2s":"1Mbps",
+			    "color":"#01DF01",
+			    "curve":0
+			},
+			...
 		]
 
 	}
 
 
-## 3 get topology from mininet
+## 4 get topology from mininet
 **Description**: 
 
 	URL		mininet/get/topology/
@@ -169,9 +240,24 @@
         "code":200
         "msg":"success"
         "nodeDataArray": [
-            {"id": 1, "category":"server", "loc":"143 -130", "node_id":"server1", "node_name":"xxx"}
+            {
+                "id": 1,
+                "category":"switch",
+                "loc":"143 -130",
+                "node_name":"s_1"
+            },
+            ...
         ],
 		"linkDataArray": [
-			{"link_id":"link", "source_node_id":1, "source_node_name":"xxx", "dest_node_id":2, "dest_node_name":"xxx", "curve":0}
+			{
+			    "id":
+			    "link_id":"link",
+			    "source_node_id":1,
+			    "source_node_name":"xxx",
+			    "dest_node_id":2,
+			    "dest_node_name":"xxx",
+			    "curve":0
+			},
+			...
 		]
 	}

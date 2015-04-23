@@ -44,10 +44,12 @@ def get_mini_network():
 
 def do_update_node(request, node):
     #category = request.REQUEST.get("category", None)
-    #node_name = request.REQUEST.get("node_name", None)
+    node_name = request.REQUEST.get("node_name", None)
     loc = request.REQUEST.get("loc", None)
     if loc:
         node.loc = loc
+    if node_name and isinstance(node, Node):
+        node.node_name = node_name
     node.save()
 
 
@@ -223,3 +225,73 @@ def get_mininet_topology():
         "linkDataArray": links
     }
     return dic
+
+def get_controller_topology():
+    topology = get_topology()
+    nodes = get_and_update_nodes(topology)
+    links = get_links_with_load(topology)
+    dic = {
+        "nodeDataArray": nodes,
+        "linkDataArray": links
+    }
+    return dic
+
+
+### path calculate
+### use bellman-ford
+
+
+def relax(node, neighbour, graph, d, p):
+    if d[neighbour] > d[node] + graph[node][neighbour]:
+        d[neighbour] = d[node] + graph[node][neighbour]
+        p[neighbour] = node
+
+
+def bellman_ford(graph, source):
+    dist = {}
+    pre = {}
+    for node in graph:
+        dist[node] = float('Inf')
+        pre[node] = None
+    dist[source] = 0
+    for i in range(len(graph)-1):
+        for u in graph:
+            for v in graph[u]:
+                relax(u, v, graph, dist, pre)
+
+    # check for negative-weight cycles
+    for u in graph:
+        for v in graph[u]:
+            assert dist[v] <= dist[u] + graph[u][v]
+
+    return dist, pre
+
+
+def test():
+    graph = {
+        'a': {'b': -1, 'c':  4},
+        'b': {'c':  3, 'd':  2, 'e':  2},
+        'c': {},
+        'd': {'b':  1, 'c':  5},
+        'e': {'d': -3}
+        }
+
+    d, p = bellman_ford(graph, 'a')
+
+    assert d == {
+        'a':  0,
+        'b': -1,
+        'c':  2,
+        'd': -2,
+        'e':  1
+        }
+
+    assert p == {
+        'a': None,
+        'b': 'a',
+        'c': 'b',
+        'd': 'e',
+        'e': 'b'
+        }
+
+if __name__ == '__main__': test()

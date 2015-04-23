@@ -29,6 +29,7 @@ class Link(models.Model):
     load_s2d = models.FloatField(default=0.0)
     load_d2s = models.FloatField(default=0.0)
     curve = models.FloatField(default=0.0)
+    cost = models.FloatField(default=1.0)
 
     class Meta:
         db_table = 'link'

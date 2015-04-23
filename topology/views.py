@@ -97,7 +97,7 @@ def mininet_update_link(request):
         try:
             link = MiniLink.objects.get(id=request.REQUEST['id'])
         except:
-            return wrap_error_response(400, "Node does not exist.")
+            return wrap_error_response(400, "Link does not exist.")
         if "curve" in request.REQUEST and request.REQUEST["curve"]:
             link.curve = float(request.REQUEST["curve"])
         link.save()
@@ -117,6 +117,38 @@ def mininet_delete_link(request):
 
 
 @csrf_exempt
+def opendaylight_update_node(request):
+    try:
+        try:
+            node = Node.objects.get(id=request.REQUEST['id'])
+        except:
+            return wrap_error_response(400, "Node does not exist.")
+        do_update_node(request, node)
+        return wrap_success_response(get_controller_topology())
+    except Exception as e:
+        print traceback.print_exc()
+        return wrap_error_response(500, str(e))
+
+
+@csrf_exempt
+def opendaylight_update_link(request):
+    try:
+        try:
+            link = Link.objects.get(id=request.REQUEST['id'])
+        except:
+            return wrap_error_response(400, "Link does not exist.")
+        if "curve" in request.REQUEST and request.REQUEST["curve"]:
+            link.curve = float(request.REQUEST["curve"])
+        if "cost" in request.REQUEST and request.REQUEST["cost"]:
+            link.cost = float(request.REQUEST["cost"])
+        link.save()
+        return wrap_success_response(get_controller_topology())
+    except Exception as e:
+        print traceback.print_exc()
+        return wrap_error_response(500, str(e))
+
+
+@csrf_exempt
 def get_mininet_topology_data(request):
     try:
         return wrap_success_response(get_mininet_topology())
@@ -128,18 +160,19 @@ def get_mininet_topology_data(request):
 @csrf_exempt
 def get_controller_topology_data(request):
     try:
-        topology = get_topology()
-        nodes = get_and_update_nodes(topology)
-        links = get_links_with_load(topology)
-        dic = {
-            "nodeDataArray": nodes,
-            "linkDataArray": links
-        }
-        return wrap_success_response(dic)
+        return wrap_success_response(get_controller_topology())
     except Exception as e:
         print traceback.print_exc()
         return wrap_error_response(500, str(e))
 
+
+@csrf_exempt
+def calculate_optimal_path(request):
+    try:
+        pass
+    except Exception as e:
+        print traceback.print_exc()
+        return wrap_error_response(500, str(e))
 
 if __name__ == '__main__':
     print get_inventory_nodes()
