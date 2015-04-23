@@ -326,7 +326,7 @@ def add_optimal_path(topology, load_weight, source, dest):
     for link_dic in topology['linkDataArray']:
         if (link_dic['source_node_id'], link_dic['dest_node_id']) in path:
             link_dic['category'] = 'bestPath'
-        elif (link_dic['source_node_id'], link_dic['dest_node_id']) in path:
+        elif (link_dic['dest_node_id'], link_dic['source_node_id']) in path:
             link_dic['category'] = 'bestPath'
             link_dic['source_node_id'], link_dic['dest_node_id'] = link_dic['dest_node_id'], link_dic['source_node_id']
 
