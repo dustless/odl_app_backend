@@ -42,8 +42,8 @@ class Link(models.Model):
         dic['dest_node_name'] = self.dest_node.node_name
         dic.pop('source_node')
         dic.pop('dest_node')
-        dic['load_s2d'] = str(round(self.load_s2d,2)) + ' Mbps'
-        dic['load_d2s'] = str(round(self.load_s2d,2)) + ' Mbps'
+        dic['load_s2d'] = str(round(self.load_s2d,2)) + ' Kbps'
+        dic['load_d2s'] = str(round(self.load_s2d,2)) + ' Kbps'
         return dic
 
 

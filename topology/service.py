@@ -196,9 +196,9 @@ def update_links_load(topology):
                         link_load, created = LinkLoad.objects.get_or_create(link=link)
                         if not created:
                             link.load_s2d = (link_load.bytes_s2d - int(node_connector['opendaylight-port-statistics:flow-capable-node-connector-statistics']['bytes']['transmitted']))\
-                                            *8/(get_cur_utc_timestamp()-link_load.update_time)/1000000.0
+                                            *8/(get_cur_utc_timestamp()-link_load.update_time)/1000.0
                             link.load_d2s = (link_load.bytes_d2s - int(node_connector['opendaylight-port-statistics:flow-capable-node-connector-statistics']['bytes']['received']))\
-                                            *8/(get_cur_utc_timestamp()-link_load.update_time)/1000000.0
+                                            *8/(get_cur_utc_timestamp()-link_load.update_time)/1000.0
                             link.save()
                         link_load.bytes_s2d = node_connector['opendaylight-port-statistics:flow-capable-node-connector-statistics']['bytes']['transmitted']
                         link_load.bytes_d2s = node_connector['opendaylight-port-statistics:flow-capable-node-connector-statistics']['bytes']['received']
@@ -314,12 +314,15 @@ def add_optimal_path(topology, load_weight, source, dest):
     dist, pre = bellman_ford(graph, source)
     path = []
     while dest:
-        path.append((dest, pre[dest]))
+        path.append((pre[dest], dest))
         dest = pre[dest]
     for link_dic in topology['linkDataArray']:
-        if (link_dic['source_node_id'], link_dic['dest_node_id']) in path or\
-                (link_dic['dest_node_id'], link_dic['source_node_id']) in path:
+        if (link_dic['source_node_id'], link_dic['dest_node_id']) in path:
             link_dic['category'] = 'bestPath'
+        elif (link_dic['source_node_id'], link_dic['dest_node_id']) in path:
+            link_dic['category'] = 'bestPath'
+            link_dic['source_node_id'], link_dic['dest_node_id'] = link_dic['dest_node_id'], link_dic['source_node_id']
+
     return topology
 
 
