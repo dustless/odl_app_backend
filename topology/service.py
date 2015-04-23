@@ -193,7 +193,7 @@ def update_links_load(topology):
                 if 'LOCAL' not in node_connector['id']:
                     try:
                         print node_connector['id']
-                        link = Link.objects.get(link_id=node_connector['id'])
+                        link = Link.objects.get(link_id__contains=node_connector['id'])
                         #print link.id
                         link_load, created = LinkLoad.objects.get_or_create(link=link)
                         #print node_connector['opendaylight-port-statistics:flow-capable-node-connector-statistics']['bytes']
@@ -203,8 +203,8 @@ def update_links_load(topology):
                         print cur_s2d_bytes, cur_d2s_bytes
                         print created
                         if not created:
-                            link.load_s2d = (link_load.bytes_s2d - cur_s2d_bytes)*8.0/(get_cur_utc_timestamp()-link_load.update_time)/1000.0
-                            link.load_d2s = (link_load.bytes_d2s - cur_d2s_bytes)*8.0/(get_cur_utc_timestamp()-link_load.update_time)/1000.0
+                            link.load_s2d = (cur_s2d_bytes - link_load.bytes_s2d)*8.0/(get_cur_utc_timestamp()-link_load.update_time)/1000.0
+                            link.load_d2s = (cur_d2s_bytes - link_load.bytes_d2s)*8.0/(get_cur_utc_timestamp()-link_load.update_time)/1000.0
                             link.save()
                         print "link:%d\ns2d:pre_bytes:%d, cur_bytes:%d\nd2s:pre_bytes:%d, cur_bytes:%d\n" % \
                               link.id, link_load.bytes_s2d, cur_s2d_bytes, link_load.bytes_d2s, cur_d2s_bytes
