@@ -84,7 +84,7 @@ def mininet_add_link(request):
             return wrap_error_response(400, "Link already exists.")
         except:
             link_id = str(source_node.id) + ':' + str(dest_node.id)
-            MiniLink.objects.create(link_id, source_node=source_node, dest_node=dest_node, curve=curve)
+            MiniLink.objects.create(link_id=link_id, source_node=source_node, dest_node=dest_node, curve=curve)
             return wrap_success_response(get_mininet_topology())
     except Exception as e:
         print traceback.print_exc()
