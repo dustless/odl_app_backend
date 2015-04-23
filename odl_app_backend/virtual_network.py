@@ -9,6 +9,7 @@ class VirtualNetwork(object):
     def __init__(self):
         self.net = Mininet(controller=partial(RemoteController, ip='192.168.255.7', port=6633), switch=OVSSwitch)
         self.controller = self.net.addController('controller', port=6633)
+        self.initialized = False
 
     def get_net(self):
         return self.net
@@ -20,6 +21,9 @@ class VirtualNetwork(object):
         return VirtualNetwork.instance
 
     def init_topo(self):
+        if self.initialized:
+            return
+        self.initialized = True
         print "*** Creating switches"
         s1 = self.net.addSwitch('s1')
         s2 = self.net.addSwitch('s2')
