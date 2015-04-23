@@ -38,6 +38,8 @@ def make_random_digits(length=9):
 
 def get_mini_network():
     if MININET_AVAILABLE:
+        if MININET_NEED_INIT and not mini_network.initialized:
+            mini_network.init_topo()
         return mini_network
     else:
         return wrap_error_response(500, "Mininet is not available.")
@@ -220,6 +222,8 @@ def get_mininet_links():
 
 def get_mininet_topology():
     if MININET_AVAILABLE and MININET_NEED_INIT:
+        if MININET_NEED_INIT and not mini_network.initialized:
+            mini_network.init_topo()
         if not MiniNode.objects.all().exists():
             s1 = MiniNode.objects.create(node_name='s1', category='switch', loc='0 100')
             s2 = MiniNode.objects.create(node_name='s2', category='switch', loc='-20 60')

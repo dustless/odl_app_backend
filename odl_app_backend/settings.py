@@ -28,12 +28,10 @@ ALLOWED_HOSTS = []
 
 MININET_AVAILABLE = True
 MININET_NEED_INIT = True
+mini_network = None
 if MININET_AVAILABLE:
     from virtual_network import VirtualNetwork
     mini_network = VirtualNetwork()
-    print "mini_netword.initialized:" + str(mini_network.initialized)
-    if MININET_NEED_INIT and not mini_network.initialized:
-        mini_network.init_topo()
 else:
     mini_network = None
 
