@@ -100,7 +100,7 @@ def get_and_update_nodes(topology):
                         loc = '152 -120'
                     else:
                         loc = str(random.randint(-200, 100)) + ' ' + str(random.randint(-50, 20))
-                    node = Node.objects.create(node_id=node_dic['node-id'], node_name=name, category=category)
+                    node = Node.objects.create(node_id=node_dic['node-id'], node_name=name, category=category, loc=loc)
 
                 dic = node.get_dict()
                 nodes.append(dic)
@@ -310,7 +310,7 @@ def add_optimal_path(topology, load_weight, source, dest):
     graph = make_graph(topology, load_weight)
     dist, pre = bellman_ford(graph, source)
     path = []
-    while dest != source:
+    while dest:
         path.append((dest, pre[dest]))
         dest = pre[dest]
     for link_dic in topology['linkDataArray']:
