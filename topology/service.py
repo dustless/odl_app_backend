@@ -83,14 +83,10 @@ def get_and_update_nodes(topology):
                     node = Node.objects.get(node_id=node_dic['node-id'])
                 except:
                     if 'host' in node_dic['node-id']:
-                        name = 'h_' + make_random_digits(4)
-                        while Node.objects.filter(node_name=name).exists():
-                            name = 'h_' + make_random_digits(4)
+                        name = 'h_' + str(Node.objects.all().order_by('-id')[0].id + 1)
                         category = 'server'
                     else:
-                        name = 's_' + make_random_digits(4)
-                        while Node.objects.filter(node_name=name).exists():
-                            name = 's_' + make_random_digits(4)
+                        name = 's_' + str(Node.objects.all().order_by('-id')[0].id + 1)
                         category = 'switch'
                     if node_dic['node-id'] == 'openflow:1':
                         loc = '35 -250'
@@ -98,6 +94,8 @@ def get_and_update_nodes(topology):
                         loc = '-81 -120'
                     elif node_dic['node-id'] == 'openflow:3':
                         loc = '152 -120'
+                    elif 'openflow' in node_dic['node-id']:
+                        loc = str(random.randint(-200, 100)) + ' ' + str(random.randint(-300, -100))
                     else:
                         loc = str(random.randint(-200, 100)) + ' ' + str(random.randint(-50, 20))
                     node = Node.objects.create(node_id=node_dic['node-id'], node_name=name, category=category, loc=loc)
