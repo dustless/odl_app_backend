@@ -11,7 +11,7 @@ class Node(models.Model):
     node_id = models.CharField(max_length=30, unique=True, db_index=True)
     node_name = models.CharField(max_length=30, unique=True)
     category = models.CharField(max_length=20, default='switch')
-    loc = models.CharField(max_length=20, default="0 0")
+    loc = models.CharField(max_length=40, default="0 0")
 
     class Meta:
         db_table = 'node'
@@ -58,7 +58,7 @@ class MiniNode(models.Model):
     #node_id = models.CharField(max_length=30, unique=True, db_index=True)
     node_name = models.CharField(max_length=30, unique=True)
     category = models.CharField(max_length=20, default='switch')
-    loc = models.CharField(max_length=20, default="0 0")
+    loc = models.CharField(max_length=40, default="0 0")
 
     class Meta:
         db_table = 'mini_node'
