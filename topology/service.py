@@ -194,12 +194,14 @@ def update_links_load(topology):
                     try:
                         print node_connector['id']
                         link = Link.objects.get(link_id=node_connector['id'])
-                        print link.id
+                        #print link.id
                         link_load, created = LinkLoad.objects.get_or_create(link=link)
-                        print node_connector['opendaylight-port-statistics:flow-capable-node-connector-statistics']
+                        #print node_connector['opendaylight-port-statistics:flow-capable-node-connector-statistics']['bytes']
 
-                        cur_s2d_bytes = int(node_connector['opendaylight-port-statistics:flow-capable-node-connector-statistics']['bytes']['transmitted'])
-                        cur_d2s_bytes = int(node_connector['opendaylight-port-statistics:flow-capable-node-connector-statistics']['bytes']['received'])
+                        cur_s2d_bytes = node_connector['opendaylight-port-statistics:flow-capable-node-connector-statistics']['bytes']['transmitted']
+                        cur_d2s_bytes = node_connector['opendaylight-port-statistics:flow-capable-node-connector-statistics']['bytes']['received']
+                        print cur_s2d_bytes, cur_d2s_bytes
+                        print created
                         if not created:
                             link.load_s2d = (link_load.bytes_s2d - cur_s2d_bytes)*8.0/(get_cur_utc_timestamp()-link_load.update_time)/1000.0
                             link.load_d2s = (link_load.bytes_d2s - cur_d2s_bytes)*8.0/(get_cur_utc_timestamp()-link_load.update_time)/1000.0
