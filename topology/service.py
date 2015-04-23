@@ -193,7 +193,11 @@ def update_links_load(topology):
                 if 'LOCAL' not in node_connector['id']:
                     try:
                         print node_connector['id']
-                        link = Link.objects.get(link_id__contains=node_connector['id'])
+                        link = Link.objects.filter(link_id__icontains=node_connector['id'])
+                        if link:
+                            link = link[0]
+                        else:
+                            continue
                         #print link.id
                         link_load, created = LinkLoad.objects.get_or_create(link=link)
                         #print node_connector['opendaylight-port-statistics:flow-capable-node-connector-statistics']['bytes']
@@ -213,6 +217,7 @@ def update_links_load(topology):
                         link_load.update_time = get_cur_utc_timestamp()
                         link_load.save()
                     except:
+                        print traceback.print_exc()
                         continue
 
 
