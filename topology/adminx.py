@@ -4,7 +4,7 @@ __author__ = 'chenghui'
 import xadmin
 from django.db.models import get_app, get_models
 
-app = get_app('record')
+app = get_app('topology')
 for model in get_models(app):
     name = model._meta.verbose_name
     xadmin.site.register(model)
