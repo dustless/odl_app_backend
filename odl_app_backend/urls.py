@@ -19,4 +19,5 @@ urlpatterns = patterns('',
     url(r'opendaylight/update/link/', 'topology.views.opendaylight_update_link'),
     url(r'mininet/get/topology/', 'topology.views.get_mininet_topology_data'),
     url(r'opendaylight/get/topology/', 'topology.views.get_controller_topology_data'),
+    url(r'opendaylight/get/optimal/path/', 'topology.views.get_optimal_path'),
 )

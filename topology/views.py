@@ -3,7 +3,7 @@
 import traceback
 
 from django.views.decorators.csrf import csrf_exempt
-
+from django.db.models import Q
 from basics.req_res import *
 from topology.service import *
 
@@ -59,8 +59,17 @@ def mininet_delete_node(request):
             return mini_network
         try:
             node = MiniNode.objects.get(id=request.REQUEST['id'])
-            mini_network
-            return wrap_error_response(500, 'Not available now.')
+            try:
+                if node.category == 'switch':
+                    mini_network.remove_switch(node.node_name)
+                else:
+                    mini_network.remove_host(node.node_name)
+            except Exception as e:
+                return wrap_error_response(500, 'Remove error.'+str(e))
+            MiniLink.objects.filter(Q(source_node=node) | Q(dest_node=node)).delete()
+            node.delete()
+
+            return wrap_success_response(get_mininet_topology())
         except:
             return wrap_error_response(400, "Update failed.Maybe node does not exists")
     except Exception as e:
@@ -110,7 +119,12 @@ def mininet_update_link(request):
 @csrf_exempt
 def mininet_delete_link(request):
     try:
-        return wrap_error_response(500, 'Not available now.')
+        try:
+            link = MiniLink.objects.get(id=request.REQUEST['id'])
+        except:
+            return wrap_error_response(400, "Link does not exist.")
+        link.delete()
+        return wrap_success_response(get_mininet_topology())
     except Exception as e:
         print traceback.print_exc()
         return wrap_error_response(500, str(e))
@@ -167,13 +181,10 @@ def get_controller_topology_data(request):
 
 
 @csrf_exempt
-def calculate_optimal_path(request):
+def get_optimal_path(request):
     try:
         pass
     except Exception as e:
         print traceback.print_exc()
         return wrap_error_response(500, str(e))
 
-if __name__ == '__main__':
-    print get_inventory_nodes()
-    print get_inventory_node('openflow:1')

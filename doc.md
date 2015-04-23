@@ -261,3 +261,51 @@
 			...
 		]
 	}
+
+
+## 5 get optimal path
+**Description**: 
+
+	URL		opendaylight/get/optimal/path/
+	Method	POST/GET
+	Params			
+	{
+	    "loadWeight":
+	    "source_node_id":
+	    "dest_node_id":
+	}
+	Result
+	{
+        "code":200
+        "msg":"success"
+        "nodeDataArray": [
+            {
+                "id": 1,
+                "category":"switch",
+                "loc":"143 -130",
+                "node_id":"openflow:1",
+                "node_name":"s_1"
+            },
+            ...
+        ],
+		"linkDataArray": [
+			{
+			    "id":
+			    
+			    "category": "bestPath",  // if this link is in the optimal path
+			    
+			    "link_id":"link",
+			    "cost": 1.0,
+			    "source_node_id":1,
+			    "source_node_name":"xxx",
+			    "dest_node_id":2,
+			    "dest_node_name":"xxx",
+			    "load_s2d":"10Mbps",
+			    "load_d2s":"1Mbps",
+			    "color":"#01DF01",
+			    "curve":0
+			},
+			...
+		]
+
+	}
