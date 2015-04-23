@@ -16,10 +16,10 @@ class Singleton2(type):
 
 class VirtualNetwork(object):
     __metaclass__ = Singleton2
+    initialized = False
     def __init__(self):
         self.net = Mininet(controller=partial(RemoteController, ip='192.168.255.7', port=6633), switch=OVSSwitch)
         self.controller = self.net.addController('controller', port=6633)
-        self.initialized = False
 
     def get_net(self):
         return self.net
