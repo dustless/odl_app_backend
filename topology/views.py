@@ -94,7 +94,7 @@ def mininet_add_link(request):
             return wrap_error_response(400, "Link already exists.")
         try:
             mini_network.add_link(source_node.node_name, dest_node.node_name)
-
+            mini_network.start_net()
         except Exception as e:
             print traceback.print_exc()
             return wrap_error_response(500, "Add link failed!"+ str(e))
