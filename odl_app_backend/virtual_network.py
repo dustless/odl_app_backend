@@ -5,12 +5,19 @@ from mininet.log import setLogLevel
 
 
 class VirtualNetwork(object):
+    instance = None
     def __init__(self):
         self.net = Mininet(controller=partial(RemoteController, ip='192.168.255.7', port=6633), switch=OVSSwitch)
         self.controller = self.net.addController('controller', port=6633)
 
     def get_net(self):
         return self.net
+
+    @staticmethod
+    def get_instance():
+        if VirtualNetwork.instance == None:
+            VirtualNetwork.instance = VirtualNetwork()
+        return VirtualNetwork.instance
 
     def init_topo(self):
         print "*** Creating switches"

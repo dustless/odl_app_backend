@@ -32,7 +32,7 @@ mini_network = None
 if MININET_AVAILABLE:
     from virtual_network import VirtualNetwork
     if not mini_network:
-        mini_network = VirtualNetwork()
+        mini_network = VirtualNetwork.get_instance()
         if MININET_NEED_INIT:
             mini_network.init_topo()
 else:
