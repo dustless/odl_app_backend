@@ -194,12 +194,14 @@ def update_links_load(topology):
                     try:
                         link = Link.objects.get(link_id=node_connector['id'])
                         link_load, created = LinkLoad.objects.get_or_create(link=link)
+                        cur_s2d_bytes = int(node_connector['opendaylight-port-statistics:flow-capable-node-connector-statistics']['bytes']['transmitted'])
+                        cur_d2s_bytes = int(node_connector['opendaylight-port-statistics:flow-capable-node-connector-statistics']['bytes']['received'])
                         if not created:
-                            link.load_s2d = (link_load.bytes_s2d - int(node_connector['opendaylight-port-statistics:flow-capable-node-connector-statistics']['bytes']['transmitted']))\
-                                            *8/(get_cur_utc_timestamp()-link_load.update_time)/1000.0
-                            link.load_d2s = (link_load.bytes_d2s - int(node_connector['opendaylight-port-statistics:flow-capable-node-connector-statistics']['bytes']['received']))\
-                                            *8/(get_cur_utc_timestamp()-link_load.update_time)/1000.0
+                            link.load_s2d = (link_load.bytes_s2d - cur_s2d_bytes)*8.0/(get_cur_utc_timestamp()-link_load.update_time)/1000.0
+                            link.load_d2s = (link_load.bytes_d2s - cur_d2s_bytes)*8.0/(get_cur_utc_timestamp()-link_load.update_time)/1000.0
                             link.save()
+                        print "link:%d\ns2d:pre_bytes:%d, cur_bytes:%d\nd2s:pre_bytes:%d, cur_bytes:%d\n" % \
+                              link.id, link_load.bytes_s2d, cur_s2d_bytes, link_load.bytes_d2s, cur_d2s_bytes
                         link_load.bytes_s2d = node_connector['opendaylight-port-statistics:flow-capable-node-connector-statistics']['bytes']['transmitted']
                         link_load.bytes_d2s = node_connector['opendaylight-port-statistics:flow-capable-node-connector-statistics']['bytes']['received']
                         link_load.update_time = get_cur_utc_timestamp()

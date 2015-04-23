@@ -49,8 +49,8 @@ class Link(models.Model):
 
 class LinkLoad(models.Model):
     link = models.ForeignKey(Link, related_name='link_load')
-    bytes_s2d = models.FloatField(default=0.0)
-    bytes_d2s = models.FloatField(default=0.0)
+    bytes_s2d = models.IntegerField(default=0)
+    bytes_d2s = models.IntegerField(default=0)
     update_time = models.BigIntegerField(blank=True, null=True)
 
 
