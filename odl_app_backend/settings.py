@@ -29,11 +29,13 @@ ALLOWED_HOSTS = []
 MININET_AVAILABLE = True
 MININET_INIT = True
 mini_network = None
-# if MININET_AVAILABLE:
-#     from virtual_network import VirtualNetwork
-#     mini_network = VirtualNetwork()
-# else:
-#     mini_network = None
+if MININET_AVAILABLE:
+    from virtual_network import VirtualNetwork
+    mini_network = VirtualNetwork()
+    if MININET_INIT:
+        mini_network.init_topo()
+else:
+    mini_network = None
 
 
 # Application definition
