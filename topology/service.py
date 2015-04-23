@@ -8,7 +8,7 @@ import traceback
 import string, random
 
 from odl_app_backend.virtual_network import VirtualNetwork
-from odl_app_backend.settings import MININET_AVAILABLE, MININET_INIT, mini_network
+from odl_app_backend.settings import MININET_AVAILABLE, MININET_NEED_INIT, mini_network
 
 _url_topology = '{config}/network-topology:network-topology/'
 _url_inventory_nodes = '{config}/opendaylight-inventory:nodes'
