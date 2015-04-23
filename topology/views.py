@@ -13,6 +13,7 @@ _url_topology = '{config}/network-topology:network-topology/'
 _url_topology_node = _url_topology + '/node/{node-id}'
 
 
+@csrf_exempt
 def mininet_add_node(request):
     try:
         mini_network = get_mini_network()
