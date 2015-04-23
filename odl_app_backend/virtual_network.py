@@ -8,6 +8,8 @@ class VirtualNetwork(object):
     def __init__(self):
         self.net = Mininet(controller=partial(RemoteController, ip='192.168.255.7', port=6633), switch=OVSSwitch)
         self.controller = self.net.addController('controller', port=6633)
+        self.net.build()
+        self.controller.start()
 
     def get_net(self):
         return self.net
