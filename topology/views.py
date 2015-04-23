@@ -119,10 +119,17 @@ def mininet_update_link(request):
 @csrf_exempt
 def mininet_delete_link(request):
     try:
+        mini_network = get_mini_network()
+        if isinstance(mini_network, HttpResponse):
+            return mini_network
         try:
             link = MiniLink.objects.get(id=request.REQUEST['id'])
         except:
             return wrap_error_response(400, "Link does not exist.")
+        try:
+            pass
+        except Exception as e:
+            return wrap_error_response(500, "Delete link error."+str(e))
         link.delete()
         return wrap_success_response(get_mininet_topology())
     except Exception as e:
@@ -188,3 +195,33 @@ def get_optimal_path(request):
         print traceback.print_exc()
         return wrap_error_response(500, str(e))
 
+
+### mininet
+def ping_all(request):
+    try:
+        mini_network = get_mini_network()
+        if isinstance(mini_network, HttpResponse):
+            return mini_network
+        mini_network.ping_all()
+        return wrap_success_response()
+    except Exception as e:
+        print traceback.print_exc()
+        return wrap_error_response(500, str(e))
+
+
+@csrf_exempt
+def ping_between_hosts(request):
+    try:
+        mini_network = get_mini_network()
+        if isinstance(mini_network, HttpResponse):
+            return mini_network
+        try:
+            source_node = MiniNode.objects.get(id=request.REQUEST['source_node_id'])
+            dest_node = MiniNode.objects.get(id=request.REQUEST['dest_node_id'])
+        except:
+            return wrap_error_response(400, "Source node or dest node not found.")
+        mini_network.ping_between_hosts(source_node.node_name, dest_node.node_name)
+        return wrap_success_response()
+    except Exception as e:
+        print traceback.print_exc()
+        return wrap_error_response(500, str(e))

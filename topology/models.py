@@ -84,5 +84,6 @@ class MiniLink(models.Model):
         dic['dest_node_id'] = self.dest_node_id
         dic['source_node_name'] = self.source_node.node_name
         dic['dest_node_name'] = self.dest_node.node_name
-
+        dic.pop('source_node')
+        dic.pop('dest_node')
         return dic
