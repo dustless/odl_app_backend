@@ -204,11 +204,13 @@ def get_controller_topology_data(request):
 @csrf_exempt
 def get_optimal_path(request):
     try:
-        load_weight = request.REQUEST.get("loadWeight", 0)
-        source_node_id = int(request.REQUEST.get("source_node_id", None))
-        dest_node_id = int(request.REQUEST.get("dest_node_id", None))
+        load_weight = float(request.REQUEST.get("loadWeight", 0))
+        source_node_id = int(request.REQUEST.get("source_node_id", 0))
+        dest_node_id = int(request.REQUEST.get("dest_node_id", 0))
         if not source_node_id or not dest_node_id:
             return wrap_error_response(400, 'source_node_id and dest_node_id is needed.')
+        if load_weight < 0 or load_weight > 1:
+            return wrap_error_response(400, 'load weight should be in [0,1]')
         try:
             source_node = Node.objects.get(id=source_node_id)
             dest_node = Node.objects.get(id=dest_node_id)

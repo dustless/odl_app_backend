@@ -238,7 +238,7 @@ def get_mininet_topology():
             s2 = MiniNode.objects.create(node_name='s2', category='switch', loc='-81 -120')
             s3 = MiniNode.objects.create(node_name='s3', category='switch', loc='152 -120')
             h1 = MiniNode.objects.create(node_name='h1', category='host', loc='-167 -10')
-            h2 = MiniNode.objects.create(node_name='h2', category='host', loc='-110 -10')
+            h2 = MiniNode.objects.create(node_name='h2', category='host', loc='-30 -10')
             h3 = MiniNode.objects.create(node_name='h3', category='host', loc='75 -10')
             h4 = MiniNode.objects.create(node_name='h4', category='host', loc='260 -10')
             MiniLink.objects.create(link_id='1:2', source_node=s1, dest_node=s2)
