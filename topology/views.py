@@ -93,7 +93,8 @@ def mininet_add_link(request):
         if MiniLink.objects.filter(Q(link_id=link_id) | Q(link_id=link_id_r)).exists():
             return wrap_error_response(400, "Link already exists.")
         try:
-            mini_network.add_link(source_node.name, dest_node.name)
+            mini_network.add_link(source_node.node_name, dest_node.node_name)
+
         except Exception as e:
             print traceback.print_exc()
             return wrap_error_response(500, "Add link failed!"+ str(e))
