@@ -4,8 +4,18 @@ from functools import partial
 from mininet.log import setLogLevel
 
 
+class Singleton2(type):
+    def __init__(cls, name, bases, dict):
+        super(Singleton2, cls).__init__(name, bases, dict)
+        cls._instance = None
+    def __call__(cls, *args, **kw):
+        if cls._instance is None:
+            cls._instance = super(Singleton2, cls).__call__(*args, **kw)
+        return cls._instance
+
+
 class VirtualNetwork(object):
-    instance = None
+    __metaclass__ = Singleton2
     def __init__(self):
         self.net = Mininet(controller=partial(RemoteController, ip='192.168.255.7', port=6633), switch=OVSSwitch)
         self.controller = self.net.addController('controller', port=6633)
