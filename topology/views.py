@@ -236,6 +236,7 @@ def mininet_start_net(request):
         if isinstance(mini_network, HttpResponse):
             return mini_network
         mini_network.start_net()
+        return wrap_success_response()
     except Exception as e:
         print traceback.print_exc()
         return wrap_error_response(500, str(e))
