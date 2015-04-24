@@ -342,3 +342,17 @@
         "code":200
         "msg":"success"
     }
+
+### 6.3 start net
+**Description**: 
+
+	URL		mininet/start/net
+	Method	POST/GET
+	Params			
+	{
+	}
+	Result
+	{
+        "code":200
+        "msg":"success"
+    }

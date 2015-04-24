@@ -264,7 +264,7 @@ def mininet_ping_between_hosts(request):
         try:
             source_node = MiniNode.objects.get(id=request.REQUEST['source_node_id'])
             dest_node = MiniNode.objects.get(id=request.REQUEST['dest_node_id'])
-        except:
+        except MiniNode.DoesNotExist:
             return wrap_error_response(400, "Source node or dest node not found.")
         mini_network.ping_between_hosts(source_node.node_name, dest_node.node_name)
         return wrap_success_response()
