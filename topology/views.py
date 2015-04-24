@@ -247,7 +247,6 @@ def mininet_ping_all(request):
         mini_network = get_mini_network()
         if isinstance(mini_network, HttpResponse):
             return mini_network
-        mini_network.start_net()
         mini_network.ping_all()
         return wrap_success_response()
     except Exception as e:
