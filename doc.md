@@ -309,3 +309,36 @@
 		]
 
 	}
+	
+## 6 other Mininet api
+### 6.1 ping all
+
+**Description**: 
+
+	URL		mininet/ping/all/
+	Method	POST/GET
+	Params			
+	{
+	}
+	Result
+	{
+        "code":200
+        "msg":"success"
+    }
+
+### 6.2 ping between hosts
+
+**Description**: 
+
+	URL		mininet/ping/between/hosts/
+	Method	POST/GET
+	Params			
+	{
+	    "source_node_id":
+	    "dest_node_id":
+	}
+	Result
+	{
+        "code":200
+        "msg":"success"
+    }
