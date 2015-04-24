@@ -94,7 +94,7 @@ def mininet_add_link(request):
             return wrap_error_response(400, "Link already exists.")
         try:
             mini_network.add_link(source_node.node_name, dest_node.node_name)
-            mini_network.start_net()
+            # mini_network.start_net()
         except Exception as e:
             print traceback.print_exc()
             return wrap_error_response(500, "Add link failed!"+ str(e))
@@ -230,11 +230,23 @@ def get_optimal_path(request):
 
 
 ### mininet
+def mininet_start_net(request):
+    try:
+        mini_network = get_mini_network()
+        if isinstance(mini_network, HttpResponse):
+            return mini_network
+        mini_network.start_net()
+    except Exception as e:
+        print traceback.print_exc()
+        return wrap_error_response(500, str(e))
+
+
 def mininet_ping_all(request):
     try:
         mini_network = get_mini_network()
         if isinstance(mini_network, HttpResponse):
             return mini_network
+        mini_network.start_net()
         mini_network.ping_all()
         return wrap_success_response()
     except Exception as e:

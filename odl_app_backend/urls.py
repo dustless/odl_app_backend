@@ -17,6 +17,7 @@ urlpatterns = patterns('',
     url(r'mininet/delete/link', 'topology.views.mininet_delete_link'),
     url(r'mininet/get/topology', 'topology.views.get_mininet_topology_data'),
 
+    url(r'mininet/start/net', 'topology.views.mininet_start_net'),
     url(r'mininet/ping/all', 'topology.views.mininet_ping_all'),
     url(r'mininet/ping/between/hosts', 'topology.views.mininet_ping_between_hosts'),
 
