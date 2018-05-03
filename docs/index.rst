@@ -6,10 +6,15 @@
 Welcome to odl_app_backend's documentation!
 ===========================================
 
+Contents
+--------
+
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
 
+   self
+   test/test
 
 
 Indices and tables
